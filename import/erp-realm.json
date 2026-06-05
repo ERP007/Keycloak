@@ -1,0 +1,26 @@
+{
+  "realm": "erp",
+  "enabled": true,
+  "loginTheme": "erp",
+  "registrationAllowed": false,
+  "resetPasswordAllowed": true,
+  "clients": [
+    {
+      "clientId": "frontend",
+      "name": "ERP Frontend",
+      "enabled": true,
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "redirectUris": [
+        "https://api.erp007.xyz/*",
+        "http://localhost:18080/*"
+      ],
+      "webOrigins": [
+        "https://api.erp007.xyz",
+        "http://localhost:18080"
+      ]
+    }
+  ],
+  "users": []
+}

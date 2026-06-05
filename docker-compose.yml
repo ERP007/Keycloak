@@ -1,0 +1,64 @@
+name: erp007-keycloak
+
+services:
+  keycloak:
+    build:
+      context: .
+    image: erp007/keycloak:server
+    container_name: ${KEYCLOAK_CONTAINER_NAME:-keycloak}
+    restart: unless-stopped
+    depends_on:
+      keycloak-postgres:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:${KEYCLOAK_HOST_PORT:-9001}:8080"
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: ${KEYCLOAK_ADMIN_USERNAME}
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://keycloak-postgres:5432/${POSTGRES_DB}
+      KC_DB_USERNAME: ${POSTGRES_USER}
+      KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
+      KC_HTTP_ENABLED: ${KEYCLOAK_HTTP_ENABLED:-true}
+      KC_HOSTNAME: ${KEYCLOAK_HOSTNAME}
+      KC_PROXY_HEADERS: ${KEYCLOAK_PROXY_HEADERS:-xforwarded}
+      KC_HEALTH_ENABLED: "true"
+      KC_SPI_THEME_STATIC_MAX_AGE: ${KEYCLOAK_THEME_STATIC_MAX_AGE:--1}
+      KC_SPI_THEME_CACHE_THEMES: ${KEYCLOAK_THEME_CACHE_THEMES:-false}
+      KC_SPI_THEME_CACHE_TEMPLATES: ${KEYCLOAK_THEME_CACHE_TEMPLATES:-false}
+    command:
+      - ${KEYCLOAK_START_MODE:-start}
+      - --import-realm
+    networks:
+      edge-app:
+        aliases:
+          - keycloak
+      keycloak-data:
+
+  keycloak-postgres:
+    image: postgres:16-alpine
+    container_name: ${POSTGRES_CONTAINER_NAME:-keycloak-postgres}
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - keycloak_postgres_data:/var/lib/postgresql/data
+    networks:
+      - keycloak-data
+
+networks:
+  edge-app:
+    external: true
+    name: msa-edge-app
+  keycloak-data:
+    name: erp007-keycloak-data
+
+volumes:
+  keycloak_postgres_data:

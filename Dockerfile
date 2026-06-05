@@ -4,5 +4,6 @@
 FROM quay.io/keycloak/keycloak:26.6.2
 
 COPY keycloak-themes/erp /opt/keycloak/themes/erp
+COPY import /opt/keycloak/data/import
 
 EXPOSE 8080
