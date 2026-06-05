@@ -13,10 +13,12 @@
       "standardFlowEnabled": true,
       "directAccessGrantsEnabled": false,
       "redirectUris": [
+        "https://erp007.xyz/*",
         "https://api.erp007.xyz/*",
         "http://localhost:18080/*"
       ],
       "webOrigins": [
+        "https://erp007.xyz",
         "https://api.erp007.xyz",
         "http://localhost:18080"
       ]
