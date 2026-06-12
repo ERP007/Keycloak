@@ -4,7 +4,7 @@
         <main class="erp-login-page erp-password-page">
             <#assign passwordErrorMessage = "">
             <#assign passwordConfirmErrorMessage = "">
-            <#assign isUserInitiatedPasswordChange = isAppInitiatedAction??>
+            <#assign isUserInitiatedPasswordChange = isAppInitiatedAction?? && isAppInitiatedAction>
             <#if messagesPerField.existsError('password')>
                 <#assign passwordErrorMessage = messagesPerField.get('password')>
             </#if>
@@ -172,7 +172,7 @@
                 ><#if passwordErrorMessage?has_content>${kcSanitize(passwordErrorMessage)?no_esc}</#if></p>
 
                 <button class="erp-login-button erp-password-submit" name="login" id="kc-password-submit" type="submit">변경</button>
-                <#if isAppInitiatedAction??>
+                <#if isUserInitiatedPasswordChange>
                     <button
                         class="erp-cancel-button"
                         type="submit"

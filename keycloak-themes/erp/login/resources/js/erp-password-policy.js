@@ -11,6 +11,12 @@
     var hasServerPolicyError = policyError && policyError.getAttribute("data-server-error") === "true";
     var hasServerConfirmError = confirmError && confirmError.getAttribute("data-server-error") === "true";
 
+    function forEachNode(nodes, callback) {
+        for (var index = 0; index < nodes.length; index += 1) {
+            callback(nodes[index], index);
+        }
+    }
+
     function setPasswordVisibility(input, button, visible) {
         var label = visible ? button.getAttribute("data-hide-label") : button.getAttribute("data-show-label");
 
@@ -38,7 +44,7 @@
         });
     }
 
-    passwordToggleButtons.forEach(bindPasswordToggle);
+    forEachNode(passwordToggleButtons, bindPasswordToggle);
 
     if (!newPasswordInput || !confirmPasswordInput || !submitButton || policyItems.length === 0) {
         return;
@@ -46,7 +52,7 @@
 
     var validationSkipButtons = document.querySelectorAll("[data-skip-password-validation]");
 
-    validationSkipButtons.forEach(function (button) {
+    forEachNode(validationSkipButtons, function (button) {
         button.addEventListener("click", function () {
             skipValidationSubmit = true;
         });
