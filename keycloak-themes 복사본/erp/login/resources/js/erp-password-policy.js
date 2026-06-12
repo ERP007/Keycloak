@@ -7,7 +7,6 @@
     var confirmError = document.getElementById("input-error-password-confirm");
     var policyItems = document.querySelectorAll("[data-policy]");
     var passwordToggleButtons = document.querySelectorAll("[data-password-toggle]");
-    var skipValidationSubmit = false;
     var hasServerPolicyError = policyError && policyError.getAttribute("data-server-error") === "true";
     var hasServerConfirmError = confirmError && confirmError.getAttribute("data-server-error") === "true";
 
@@ -43,14 +42,6 @@
     if (!newPasswordInput || !confirmPasswordInput || !submitButton || policyItems.length === 0) {
         return;
     }
-
-    var validationSkipButtons = document.querySelectorAll("[data-skip-password-validation]");
-
-    validationSkipButtons.forEach(function (button) {
-        button.addEventListener("click", function () {
-            skipValidationSubmit = true;
-        });
-    });
 
     var policyChecks = {
         length: function (password) {
@@ -218,15 +209,6 @@
 
     if (form) {
         form.addEventListener("submit", function (event) {
-            var submitter = event.submitter;
-            var shouldSkipValidation = skipValidationSubmit ||
-                (submitter && submitter.getAttribute("data-skip-password-validation") === "true");
-
-            if (shouldSkipValidation) {
-                skipValidationSubmit = false;
-                return;
-            }
-
             if (!getValidationState().isReadyToSubmit) {
                 event.preventDefault();
                 updatePolicyState({

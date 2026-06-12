@@ -4,7 +4,6 @@
         <main class="erp-login-page erp-password-page">
             <#assign passwordErrorMessage = "">
             <#assign passwordConfirmErrorMessage = "">
-            <#assign isUserInitiatedPasswordChange = isAppInitiatedAction??>
             <#if messagesPerField.existsError('password')>
                 <#assign passwordErrorMessage = messagesPerField.get('password')>
             </#if>
@@ -23,12 +22,8 @@
                 <#assign toastMessage = rawMessage>
                 <#assign toastType = message.type!'error'>
                 <#if normalizedMessage?contains("update password") || normalizedMessage?contains("임시 비밀번호") || normalizedMessage?contains("서비스 이용")>
-                    <#if isUserInitiatedPasswordChange>
-                        <#assign toastMessage = "">
-                    <#else>
-                        <#assign toastMessage = "서비스를 계속 이용하려면, 비밀번호를 재설정해야 합니다.">
-                        <#assign toastType = "error">
-                    </#if>
+                    <#assign toastMessage = "서비스를 계속 이용하려면, 비밀번호를 재설정해야 합니다.">
+                    <#assign toastType = "error">
                 </#if>
             </#if>
             <#if toastMessage?has_content>
@@ -173,14 +168,14 @@
 
                 <button class="erp-login-button erp-password-submit" name="login" id="kc-password-submit" type="submit">변경</button>
                 <#if isAppInitiatedAction??>
-                    <button
-                        class="erp-cancel-button"
-                        type="submit"
-                        name="cancel-aia"
-                        value="true"
-                        formnovalidate
-                        data-skip-password-validation="true"
-                    >취소</button>
+                    <button class="erp-cancel-button" type="submit" name="cancel-aia" value="true">취소</button>
+                <#else>
+                    <#assign cancelUrl = (url.loginRestartFlowUrl!'')>
+                    <#if cancelUrl?has_content>
+                        <a class="erp-cancel-button" href="${cancelUrl}">취소</a>
+                    <#else>
+                        <p class="erp-cancel-button erp-cancel-button-disabled">취소</p>
+                    </#if>
                 </#if>
             </form>
             <script src="${url.resourcesPath}/js/erp-password-policy.js" defer></script>
